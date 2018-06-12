@@ -191,10 +191,21 @@ static void __init acpi_fixup_m400_quirks(void)
 	int hest_disable = HEST_DISABLED;
 #endif
 
+	printk("%s:%d: CONFIG_ACPI_APEI=%d\n", __func__, __LINE__, IS_ENABLED(CONFIG_ACPI_APEI));
+	printk("%s:%d: hest_disable=%d\n", __func__, __LINE__, hest_disable);
+
 	if (!IS_ENABLED(CONFIG_ACPI_APEI) || hest_disable != HEST_ENABLED)
 		return;
 
 	status = acpi_get_table(ACPI_SIG_HEST, 0, &header);
+
+	if (ACPI_FAILURE(status)) {
+		const char *msg = acpi_format_exception(status);
+		printk("%s:%d: ACPI_FAILURE: %s\n", __func__, __LINE__, msg);
+	} else {
+		printk("%s:%d: oem_id=%s\n", __func__, __LINE__, header->oem_id);
+		printk("%s:%d: oem_table_id=%s\n", __func__, __LINE__, header->oem_table_id);
+	}
 
 	if (ACPI_SUCCESS(status) && !strncmp(header->oem_id, "HPE   ", 6) &&
 		!strncmp(header->oem_table_id, "ProLiant", 8) &&
