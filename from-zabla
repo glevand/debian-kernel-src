@@ -1,0 +1,3 @@
+#!/bin/bash -ex
+
+rsync -av --delete --exclude '.git' ${1} {zabla-debian:${HOME}/projects/debian/zabla-work/build-1/linux-4.16.12,${HOME}/projects/debian/debian-kernel-src}/
